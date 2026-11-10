@@ -1,0 +1,10 @@
+.crossdock/build/
+.crossdock/*.sync.json
+src/daemon/win-sender/build/
+demo/
+src/daemon/mac-listener/mirror/
+node_modules/
+.next/
+out/
+*.exe
+*.o
