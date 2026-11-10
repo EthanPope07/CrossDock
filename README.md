@@ -60,4 +60,4 @@ Phase 1 doc). Real Windows → Mac latency over a network is not yet measured.
 
 ## License
 
-Not yet chosen.
+[MIT](LICENSE) © 2026 Ethan Pope
