@@ -1,0 +1,14 @@
+{
+  "name": "crossdock-mac-listener",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CrossDock receiver: mirrors win-sender frames into a local directory",
+  "main": "listener.js",
+  "bin": { "crossdock-listener": "listener.js" },
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node listener.js --root ./mirror --port 9477",
+    "test": "node ../../../tests/phase1/run.js"
+  },
+  "license": "ISC"
+}
