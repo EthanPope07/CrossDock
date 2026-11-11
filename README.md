@@ -19,6 +19,12 @@ side is native Win32. No WSL, no network drives.
         iPhone
 ```
 
+![CrossDock dashboard: connection status, deployment progress and the last synced files with latency](docs/images/dashboard.jpg)
+
+*The dashboard during a local test run. The connection status and synced-file latencies come from a real `win-sender`
+and receiver running on one PC; the deployment panel is driven by the real telemetry writer with a sample install
+state, because a full build and install needs a Mac and an iPhone.*
+
 ## Status
 
 | Phase | Module | State |
