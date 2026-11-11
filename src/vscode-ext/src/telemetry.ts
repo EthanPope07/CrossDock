@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export type SshState = 'unconfigured' | 'connecting' | 'connected' | 'reconnecting' | 'error';
+export type SshState = 'unconfigured' | 'connecting' | 'connected' | 'reconnecting' | 'error' | 'stopped';
 
 /** Writes this module's telemetry fragment atomically; the dashboard merges fragments. Never throws. */
 export function writeLspTelemetry(file: string, state: SshState, host: string, lastError = ''): void {

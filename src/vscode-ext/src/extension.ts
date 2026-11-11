@@ -36,6 +36,7 @@ function setState(s: SshState, detail = ''): void {
     reconnecting: '$(sync~spin) CrossDock: reconnecting',
     connected: '$(check) CrossDock: connected',
     error: '$(error) CrossDock: error',
+    stopped: '$(circle-slash) CrossDock: stopped',
   };
   statusItem.text = label[s];
   statusItem.tooltip = detail ? `${s}: ${detail}` : `Mac build server: ${currentHost || '(unset)'}  ·  click for actions`;
@@ -165,7 +166,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   log.info(`CrossDock extension activated (VS Code ${vscode.version})`);
 
   const restart = async () => { await stopClient(); await startClient(); };
+  // Heartbeat: lets the dashboard tell "connected" from "VS Code was closed" (the file goes stale).
+  const heartbeat = setInterval(() => { if (telemetryFile) writeLspTelemetry(telemetryFile, state, currentHost, lastError); }, 5_000);
   context.subscriptions.push(
+    { dispose: () => clearInterval(heartbeat) },
     statusItem,
     output,
     { dispose: () => log.dispose() },
@@ -184,4 +188,5 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
 export async function deactivate(): Promise<void> {
   await stopClient();
+  if (telemetryFile) writeLspTelemetry(telemetryFile, 'stopped', currentHost, '');
 }
