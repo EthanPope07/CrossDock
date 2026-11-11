@@ -24,7 +24,7 @@ side is native Win32. No WSL, no network drives.
 | Phase | Module | State |
 |---|---|---|
 | 1 | **File sync daemon**: `src/daemon` (C++ sender, Node receiver) | ✅ Built and tested, see [docs/phase1-file-sync.md](docs/phase1-file-sync.md) |
-| 2 | **IDE LSP bridge**: `src/vscode-ext` (TypeScript) | 🔜 Planned |
+| 2 | **IDE LSP bridge**: `src/vscode-ext` (TypeScript) | 🟡 Built, unit-tested, loads in VS Code; needs a real Mac to verify end to end, see [docs/phase2-lsp-bridge.md](docs/phase2-lsp-bridge.md) |
 | 3 | **Remote build + USB deploy**: `src/deploy` (Node) | 🔜 Planned |
 | 4 | **Telemetry dashboard**: `src/dashboard` (Next.js + Tailwind) | 🔜 Scaffolded only |
 
