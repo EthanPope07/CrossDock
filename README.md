@@ -26,7 +26,7 @@ side is native Win32. No WSL, no network drives.
 | 1 | **File sync daemon**: `src/daemon` (C++ sender, Node receiver) | ✅ Built and tested, see [docs/phase1-file-sync.md](docs/phase1-file-sync.md) |
 | 2 | **IDE LSP bridge**: `src/vscode-ext` (TypeScript) | 🟡 Built, unit-tested, loads in VS Code; needs a real Mac to verify end to end, see [docs/phase2-lsp-bridge.md](docs/phase2-lsp-bridge.md) |
 | 3 | **Remote build + USB deploy**: `src/deploy` (Node) | 🟡 Built and unit-tested; needs a Mac, an iPhone and `ideviceinstaller.exe` to verify end to end, see [docs/phase3-build-deploy.md](docs/phase3-build-deploy.md) |
-| 4 | **Telemetry dashboard**: `src/dashboard` (Next.js + Tailwind) | 🔜 Scaffolded only |
+| 4 | **Telemetry dashboard**: `src/dashboard` (Next.js + Tailwind) | ✅ Built; verified in a browser against real module output, see [docs/phase4-dashboard.md](docs/phase4-dashboard.md) |
 
 Each module runs and tests independently and talks to the others over stdin/stdout, TCP, or local JSON files.
 Network drops are expected: the daemons reconnect automatically and resync. Verbose logs go to `~/.crossdock/logs/`.
@@ -46,6 +46,12 @@ Watch it work live (one command per terminal tab, then edit files in `demo/windo
 ./scripts/demo-phase1.ps1 receiver
 ./scripts/demo-phase1.ps1 sender
 ./scripts/demo-phase1.ps1 view
+```
+
+See everything at once (connection status, last 10 synced files with latency, deployment progress):
+
+```powershell
+cd src/dashboard; npm install; npm run dev     # http://127.0.0.1:3000
 ```
 
 Measured on loopback with Windows Defender on: a saved `.swift` file is visible on the receiver in a median of

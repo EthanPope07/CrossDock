@@ -50,7 +50,8 @@ Commands: *CrossDock: Reconnect to Mac*, *CrossDock: Show Log*.
 - **Resilience** (`extension.ts`): a dropped connection restarts the client, which reconnects and re-opens documents.
   If the remote command exits within 5 s three times in a row (typically a wrong `crossdock.lsp.command` or missing
   Xcode tools) it stops and shows the Mac's stderr instead of looping.
-- **Telemetry:** writes `.crossdock/crossdock-telemetry.lsp.json` (SSH state) for the Phase 4 dashboard.
+- **Telemetry:** writes `.crossdock/crossdock-telemetry.lsp.json` (SSH state) for the Phase 4 dashboard, refreshed
+  every 5 s while VS Code runs and set to `stopped` on shutdown, so a closed editor never looks "connected".
 
 ## Verification status
 

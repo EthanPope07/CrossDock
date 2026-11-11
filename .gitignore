@@ -1,6 +1,7 @@
 .crossdock/build/
 .crossdock/crossdock-telemetry.*.json
 dist/
+.claude/
 .crossdock/tools/
 src/daemon/win-sender/build/
 demo/
