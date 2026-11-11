@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build crossdock extension",
+      "type": "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}/src/vscode-ext" },
+      "problemMatcher": "$tsc",
+      "presentation": { "reveal": "silent" }
+    }
+  ]
+}

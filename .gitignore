@@ -11,3 +11,5 @@ node_modules/
 out/
 *.exe
 *.o
+*.vsix
+.vscode/settings.json

@@ -12,14 +12,22 @@ VS Code ─ vscode-languageclient ─► session (rewrite) ─► ssh2 exec chan
 
 1. Run Phase 1 so the workspace is mirrored on the Mac (`mac-listener --root /Users/me/proj`).
 2. Make sure `ssh <user>@<mac> xcrun sourcekit-lsp --help` works from Windows with a key (no password prompts).
-3. Build and launch the extension in a dev window:
+3. Get the extension into VS Code, either way:
+
+   **Install it permanently** (packages a `.vsix` and installs it into your everyday VS Code):
 
 ```powershell
-cd src/vscode-ext; npm install; npm run build
-code --extensionDevelopmentPath "<repo>\src\vscode-ext" <your-swift-project-folder>
+cd src/vscode-ext; npm install; npm run package
+code --install-extension crossdock-0.1.0.vsix
 ```
 
-4. In that window's settings (or the project's `.vscode/settings.json`):
+   Reload VS Code afterwards. Uninstall any time with `code --uninstall-extension crossdock.crossdock`.
+
+   **Or run it from source** (for development): open the repo folder in VS Code and press **F5**
+   (*Run CrossDock extension*, defined in `.vscode/launch.json`). A second window opens with the extension loaded; open
+   your Swift project in that window.
+
+4. In your user settings (or the project's `.vscode/settings.json`):
 
 ```json
 {
