@@ -151,7 +151,7 @@ static bool isExcluded(const std::string& rel) {
     return last.size() >= n && last.compare(last.size() - n, n, suf) == 0;
   };
   return ends("~") || ends(".tmp") || ends(".swp") || ends(".swx") || last.rfind(".#", 0) == 0 ||
-         last == ".DS_Store" || last.find(".crossdock-tmp-") != std::string::npos;
+         last == ".DS_Store" || last == "desktop.ini" || last == "Thumbs.db" || last.find(".crossdock-tmp-") != std::string::npos;
 }
 
 // ---------------------------------------------------------------- telemetry
@@ -616,6 +616,8 @@ int main() {
         ok = flush(c, w);
       } else if (nowMs() - c.lastSend >= HEARTBEAT_MS) {
         ok = sendFrame(c, ACT_PING, "", nullptr, 0) && drainAcks(c);
+        // Refresh the telemetry timestamp so a dashboard can tell "idle but alive" from "crashed".
+        if (ok) writeTelemetry();
       }
     }
     closesocket(c.s);

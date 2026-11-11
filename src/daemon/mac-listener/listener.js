@@ -21,7 +21,7 @@ const NAK = Buffer.from([0x15]);
 const MAX_PAYLOAD = 256 * 1024 * 1024;
 // Names PRUNE never deletes (build products created on the Mac, plus names the
 // sender excludes). Keep in sync with isExcluded() in win-sender/src/main.cpp.
-const DEFAULT_KEEP = ['.git', '.build', 'DerivedData', 'build', '.crossdock', '.DS_Store', 'node_modules'];
+const DEFAULT_KEEP = ['.git', '.build', 'DerivedData', 'build', '.crossdock', '.DS_Store', 'node_modules', 'desktop.ini', 'Thumbs.db'];
 
 // ------------------------------------------------------------------ options
 function parseArgs(argv) {
