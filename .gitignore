@@ -1,5 +1,6 @@
 .crossdock/build/
-.crossdock/*.sync.json
+.crossdock/crossdock-telemetry.*.json
+dist/
 src/daemon/win-sender/build/
 demo/
 src/daemon/mac-listener/mirror/

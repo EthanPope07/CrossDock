@@ -1,26 +1,61 @@
 {
-  "name": "vscode-ext",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
+  "name": "crossdock",
+  "displayName": "CrossDock",
+  "description": "Swift and Objective-C language features on Windows, powered by sourcekit-lsp running on your Mac build server over SSH.",
+  "version": "0.1.0",
+  "private": true,
   "license": "MIT",
-  "type": "commonjs",
-  "devDependencies": {
-    "@types/node": "^26.6.6",
-    "@types/vscode": "^1.145.0",
-    "esbuild": "^0.28.2",
-    "typescript": "^7.0.2"
+  "publisher": "crossdock",
+  "engines": { "vscode": "^1.91.0" },
+  "categories": ["Programming Languages"],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:swift",
+    "onLanguage:objective-c",
+    "workspaceContains:**/*.swift"
+  ],
+  "contributes": {
+    "languages": [
+      { "id": "swift", "aliases": ["Swift"], "extensions": [".swift"] },
+      { "id": "objective-c", "aliases": ["Objective-C"], "extensions": [".m"] }
+    ],
+    "commands": [
+      { "command": "crossdock.reconnect", "title": "CrossDock: Reconnect to Mac" },
+      { "command": "crossdock.showLogs", "title": "CrossDock: Show Log" }
+    ],
+    "configuration": {
+      "title": "CrossDock",
+      "properties": {
+        "crossdock.ssh.host": { "type": "string", "default": "", "description": "Hostname or IP of the Mac build server." },
+        "crossdock.ssh.port": { "type": "number", "default": 22 },
+        "crossdock.ssh.username": { "type": "string", "default": "", "description": "SSH user on the Mac." },
+        "crossdock.ssh.privateKeyPath": { "type": "string", "default": "", "description": "Path to your SSH private key (e.g. ~/.ssh/id_ed25519). Leave empty to use ssh-agent. Passwords are intentionally not supported." },
+        "crossdock.ssh.hostKeyFingerprint": { "type": "string", "default": "", "description": "Optional pinned host key fingerprint (SHA256:...). If empty, the key is trusted on first use and refused if it ever changes." },
+        "crossdock.ssh.keepaliveSeconds": { "type": "number", "default": 10, "description": "SSH keepalive interval; a dead link is detected after 3 missed keepalives." },
+        "crossdock.remoteRoot": { "type": "string", "default": "", "description": "Absolute path on the Mac where mac-listener mirrors this workspace (e.g. /Users/me/proj)." },
+        "crossdock.lsp.command": { "type": "string", "default": "xcrun sourcekit-lsp", "description": "Command run on the Mac to start the language server." },
+        "crossdock.telemetryFile": { "type": "string", "default": "", "description": "Where to write connection telemetry for the dashboard. Defaults to .crossdock/crossdock-telemetry.lsp.json in the workspace." }
+      }
+    }
+  },
+  "scripts": {
+    "build": "npm run typecheck && npm run bundle",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "bundle": "esbuild src/extension.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/extension.js --external:vscode --external:cpu-features --external:./crypto/build/Release/sshcrypto.node --sourcemap",
+    "compile-tests": "tsc -p tsconfig.json",
+    "test": "npm run compile-tests && node --test out/test/logic.test.js"
   },
   "dependencies": {
     "ssh2": "^1.17.0",
-    "vscode-languageclient": "^11.0.0"
+    "vscode-languageclient": "^11.0.0",
+    "vscode-uri": "^3.2.0"
   },
-  "overrides": {
-    "minimatch": "^11.0.6"
-  }
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/ssh2": "^1.15.6",
+    "@types/vscode": "1.91.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  },
+  "overrides": { "minimatch": "^11.0.6" }
 }
