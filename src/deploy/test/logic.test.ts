@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import * as fs from 'node:fs';
 import { createRequire } from 'node:module';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import { test } from 'node:test';
 import { LineSplitter, parseMacEvent } from '../src/events';
@@ -12,14 +14,33 @@ import { scale, WINDOWS } from '../src/telemetry';
 const mac = createRequire(__filename)(path.resolve(__dirname, '..', '..', 'mac', 'build-ipa.js'));
 
 // ---------------------------------------------------------------- shell quoting
+/**
+ * A real POSIX shell, or null. On Windows only Git for Windows / MSYS2 count: `bash.exe` on PATH is usually the
+ * WSL launcher, which re-parses the command line in an extra shell layer (and CrossDock is a no-WSL project).
+ */
+function findPosixShell(): string | null {
+  if (process.platform === 'win32') {
+    const candidates = [process.env.CROSSDOCK_SH, 'C:\\Program Files\\Git\\usr\\bin\\sh.exe', 'C:\\Program Files\\Git\\bin\\sh.exe', 'C:\\msys64\\usr\\bin\\sh.exe'];
+    return candidates.find((c): c is string => !!c && fs.existsSync(c)) ?? null;
+  }
+  for (const c of ['sh', 'bash']) { try { execFileSync(c, ['-c', 'true']); return c; } catch { /* try next */ } }
+  return null;
+}
+
 test('shQuote: value stays a single literal word in a real POSIX shell (injection attempts)', (t) => {
-  let sh = '';
-  for (const c of ['sh', 'bash']) { try { execFileSync(c, ['-c', 'true']); sh = c; break; } catch { /* try next */ } }
-  if (!sh) return t.skip('no POSIX shell available');
-  const nasty = ["plain", "it's", 'a b', '$(touch /tmp/pwned)', '`id`', 'x; echo hacked', '"quoted"', '$HOME', "'; rm -rf / #", 'new\nline'];
-  for (const s of nasty) {
-    const out = execFileSync(sh, ['-c', `printf %s ${shQuote(s)}`], { encoding: 'utf8' });
-    assert.equal(out, s, `round-trip failed for ${JSON.stringify(s)}`);
+  const sh = findPosixShell();
+  if (!sh) return t.skip('no POSIX shell available (Git for Windows / MSYS2 / sh)');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'crossdock-sh-'));
+  try {
+    const marker = path.join(dir, 'pwned').replace(/\\/g, '/');
+    const nasty = ['plain', "it's", 'a b', `$(touch ${marker})`, `\`touch ${marker}\``, `x; touch ${marker}`, '"quoted"', '$HOME', "'; rm -rf / #", 'new\nline'];
+    for (const s of nasty) {
+      const out: string = execFileSync(sh, ['-c', `printf %s ${shQuote(s)}`], { encoding: 'utf8' });
+      assert.equal(out, s, `round-trip failed for ${JSON.stringify(s)}`);
+    }
+    assert.equal(fs.existsSync(path.join(dir, 'pwned')), false, 'an injected command actually ran');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 });
 
